@@ -10,11 +10,16 @@
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, JsonResponse
 
 from challenges.models import Book
+from challenges.views.level_1.b_book_details import get_book
 
 
 def update_book(book_id: int, new_title: str, new_author_full_name: str, new_isbn: str) -> Book | None:
-    # код писать тут
-    pass
+    book_update = get_book(book_id)
+    book_update.title = new_title
+    book_update.author_full_name = new_author_full_name
+    book_update.isbn = new_isbn
+    book_update.save()
+    return book_update
 
 
 def update_book_handler(request: HttpRequest, book_id: int) -> HttpResponse:
