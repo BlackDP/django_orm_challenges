@@ -10,6 +10,7 @@
 Сделать get-запрос вы можете как с помощью Postman, так и просто в браузере.
 """
 from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseNotFound
+from django.core.exceptions import ObjectDoesNotExist
 
 from challenges.models import Book
 
@@ -18,8 +19,9 @@ def get_book(book_id: int) -> Book | None:
     try:
         book = Book.objects.get(id=book_id)
         return book
-    except:
+    except ObjectDoesNotExist:
         return None
+
 
     
 def book_details_handler(request: HttpRequest, book_id: int) -> HttpResponse:
