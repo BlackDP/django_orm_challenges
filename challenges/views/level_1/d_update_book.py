@@ -14,13 +14,7 @@ from challenges.views.level_1.b_book_details import get_book
 
 
 def update_book(book_id: int, new_title: str, new_author_full_name: str, new_isbn: str) -> Book | None:
-    book_update = get_book(book_id)
-    book_update.title = new_title
-    book_update.author_full_name = new_author_full_name
-    book_update.isbn = new_isbn
-    book_update.save()
-    return book_update
-
+    Book.objects.filter(pk=book_id).update(title = new_title, author_full_name = new_author_full_name, isbn = new_isbn)
 
 def update_book_handler(request: HttpRequest, book_id: int) -> HttpResponse:
     title = request.POST.get("title")
@@ -28,12 +22,10 @@ def update_book_handler(request: HttpRequest, book_id: int) -> HttpResponse:
     isbn = request.POST.get("isbn")
     if not all([title, author_full_name, isbn]):
         return HttpResponseBadRequest("One of required parameters are missing")
-
-    book = update_book(book_id, title, author_full_name, isbn)
-
+    update_book(book_id, title, author_full_name, isbn)
+    book = get_book(book_id)
     if book is None:
         return HttpResponseBadRequest()
-
     return JsonResponse({
         "id": book.pk,
         "title": book.title,
